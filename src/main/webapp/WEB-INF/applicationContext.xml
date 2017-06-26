@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd 
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"    
+        >
+    <!-- 属性文件读入 -->
+    <bean id="db-config"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:db-config.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 数据源定义，使用jdbc数据源 -->
+    <!-- 实际的JDBC连接属性从一个属性文件（properties file）解析而来，在这个属性文件里，关键字与提供的${占位符}互相对应， -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName">
+            <value>${db.dirverClassName}</value>
+        </property>
+        <property name="url">
+            <value>${db.url}</value>
+        </property>
+        <property name="username">
+            <value>${db.username}</value>
+        </property>
+        <property name="password">
+            <value>${db.password}</value>
+        </property>
+    </bean>
+
+    <!-- 配置JdbcTemplate -->
+    <bean id="template" class="org.springframework.jdbc.core.JdbcTemplate"
+        abstract="false" lazy-init="false" autowire="default"
+    p:dataSource-ref="dataSource"
+    />
+    
+    <!--配置View,引入p标签-->
+    <bean id="view" class="com.htgy.view.View"
+    p:loginSuccess="loginSuccess"
+    p:login="login"
+    p:regist="regist"
+    p:registSuccess="registSuccess"
+    p:registFail="registFail"
+    /> 
+</beans>
